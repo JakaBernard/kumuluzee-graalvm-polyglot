@@ -10,14 +10,8 @@ import org.graalvm.polyglot.proxy.*;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@Path("rest-data")
+@Path("js")
 public class RestDataResourceJS {
-
-    @GET
-    public Response getAllData() {
-        List<RestData> data = Database.getRestData();
-        return Response.ok(data).build();
-    }
 
     @GET
     @Path("js-simple-data")
@@ -109,7 +103,7 @@ public class RestDataResourceJS {
             output = result.execute(obj.stringArray).asString() + " + " + result.execute(obj.intArray).asString();
         }
         
-        return Response.ok(output).build();
+        return Response.ok(new SimpleStringObject(output).stringify()).build();
     }
 
     // checks if provided data is an array
@@ -125,7 +119,7 @@ public class RestDataResourceJS {
             output = "Is value array?: " + result.execute(obj.stringArray).asString();
         }
         
-        return Response.ok(output).build();
+        return Response.ok(new SimpleStringObject(output).stringify()).build();
     }
 
     // doesn't work
@@ -141,7 +135,7 @@ public class RestDataResourceJS {
             output = "Does reducer work (should return array sum): " + result.execute(obj.intArray).asString();
         }
         
-        return Response.ok(output).build();
+        return Response.ok(new SimpleStringObject(output).stringify()).build();
     }
 
     // works
@@ -157,30 +151,9 @@ public class RestDataResourceJS {
             output = "Own array: " + result.asString();
         }
         
-        return Response.ok(output).build();
+        return Response.ok(new SimpleStringObject(output).stringify()).build();
     }
 
-    @GET
-    @Path("{dataId}")
-    public Response getData(@PathParam("dataId") String dataId) {
-        RestData data = Database.getData(dataId);
-        return data != null
-                ? Response.ok(data).build()
-                : Response.status(Response.Status.NOT_FOUND).build();
-    }
-
-    @POST
-    public Response addNewData(RestData data) {
-        Database.addDataInstance(data);
-        return Response.noContent().build();
-    }
-
-    @DELETE
-    @Path("{dataId}")
-    public Response deleteData(@PathParam("dataId") String dataId) {
-        Database.deleteDataInstance(dataId);
-        return Response.noContent().build();
-    }
 }
 
 class MyObject {
@@ -197,4 +170,20 @@ class MyArrayObject {
     public String[] stringArray = new String[]{"one", "two", "three", "four"};
     public int[] intArray = new int[]{1, 2, 3, 4};
 
+}
+
+class SimpleStringObject {
+    String result;
+
+    SimpleStringObject(String data) {
+        this.result = data;
+    }
+
+    SimpleStringObject(Integer data) {
+        this.result = String.valueOf(data);
+    }
+
+    String stringify() {
+        return "{\"result\": \"" + this.result + "\"}";
+    }
 }
