@@ -14,7 +14,7 @@ import org.graalvm.polyglot.proxy.*;
 public class RestDataResourceJS {
 
     @GET
-    @Path("js-simple-data")
+    @Path("simple-data")
     public Response getSimpleData() {
         String output = "";
         try (Context context = Context.create()) {
@@ -31,7 +31,7 @@ public class RestDataResourceJS {
     }
 
     @GET
-    @Path("js-custom-string")
+    @Path("custom-string")
     public Response getCustomString() {
         String output = "";
         try (Context context = Context.create()) {
@@ -49,7 +49,7 @@ public class RestDataResourceJS {
 
     // doesn't work (array of object keys)
     @GET
-    @Path("js-object-keys")
+    @Path("object-keys")
     public Response getObjectKeys() {
         String output = "";
         try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
@@ -75,7 +75,7 @@ public class RestDataResourceJS {
 
     // doesn't work (stryingifying and object)
     @GET
-    @Path("js-object-stringify")
+    @Path("object-stringify")
     public Response getStringifiedObject() {
         String output = "";
         try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
@@ -91,7 +91,7 @@ public class RestDataResourceJS {
 
     // doesn't work (array functions)
     @GET
-    @Path("js-lambda-array-functions")
+    @Path("lambda-array-functions")
     public Response getArrayToString() {
         String output = "";
         try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
@@ -106,9 +106,26 @@ public class RestDataResourceJS {
         return Response.ok(new SimpleStringObject(output).stringify()).build();
     }
 
+    // doesn't work (array functions on array cast to javascript array)
+    @GET
+    @Path("lambda-array-functions-from")
+    public Response getArrayFromToString() {
+        String output = "";
+        try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
+            MyArrayObject obj = new MyArrayObject();
+            Value result = context.eval("js", 
+            "arr => Array.from(arr).map(val => `I have a value ${val}`).join(', ')");
+            System.out.println(result.execute(obj.stringArray).asString());
+            System.out.println(result.execute(obj.intArray).asString());
+            output = result.execute(obj.stringArray).asString() + " + " + result.execute(obj.intArray).asString();
+        }
+        
+        return Response.ok(new SimpleStringObject(output).stringify()).build();
+    }
+
     // checks if provided data is an array
     @GET
-    @Path("js-lambda-is-array")
+    @Path("lambda-is-array")
     public Response getIsArray() {
         String output = "";
         try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
@@ -124,7 +141,7 @@ public class RestDataResourceJS {
 
     // doesn't work
     @GET
-    @Path("js-lambda-reduce")
+    @Path("lambda-reduce")
     public Response getReduce() {
         String output = "";
         try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
@@ -140,7 +157,7 @@ public class RestDataResourceJS {
 
     // works
     @GET
-    @Path("js-own-array")
+    @Path("own-array")
     public Response getOwnArray() {
         String output = "";
         try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
@@ -152,6 +169,39 @@ public class RestDataResourceJS {
         }
         
         return Response.ok(new SimpleStringObject(output).stringify()).build();
+    }
+
+    @GET
+    @Path("lambda")
+    public Response getLambdaResult() {
+        long start = System.currentTimeMillis();
+        Integer output = 0;
+        try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
+            // context.eval("js", "print('Hello Javascript!');");
+            Value function = context.eval("js", "x => x + 42");
+            // System.out.println(function.execute(0).asInt());
+            output = function.execute(0).asInt();
+        }
+        long duration = System.currentTimeMillis() - start;
+        return Response.ok(new SimpleStringObject(output, duration).stringify()).build();
+    }
+
+    @GET
+    @Path("object")
+    public Response getObject() {
+        long start = System.currentTimeMillis();
+        String output = "";
+        try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
+            Value result = context.eval("js",
+                "({ " +
+                "id  : 1, " +
+                "text: 'two', " +
+                "array: ['one', 'two', 'three', 'four'] })");
+            Value array = result.getMember("array");
+            output = array.getArrayElement(3).asString() + " " + array.getArrayElement(1).asString();
+        }
+        long duration = System.currentTimeMillis() - start;
+        return Response.ok(new SimpleStringObject(output, duration).stringify()).build();
     }
 
 }
@@ -174,16 +224,27 @@ class MyArrayObject {
 
 class SimpleStringObject {
     String result;
+    long duration;
+
+    SimpleStringObject(String data, long duration) {
+        this.result = data;
+        this.duration = duration;
+    }
+
+    SimpleStringObject(Integer data, long duration) {
+        this.result = String.valueOf(data);
+        this.duration = duration;
+    }
 
     SimpleStringObject(String data) {
-        this.result = data;
+        this(data, 0l);
     }
 
     SimpleStringObject(Integer data) {
-        this.result = String.valueOf(data);
+        this(data, 0l);
     }
 
     String stringify() {
-        return "{\"result\": \"" + this.result + "\"}";
+        return "{\"result\": \"" + this.result + "\", \"duration\": \"" + String.valueOf(this.duration) +" ms\"}";
     }
 }

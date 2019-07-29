@@ -14,33 +14,37 @@ import org.graalvm.polyglot.proxy.*;
 public class RestDataResourceRuby {
 
     @GET
-    @Path("ruby-lambda")
+    @Path("lambda")
     public Response getLambdaResult() {
+        long start = System.currentTimeMillis();
         Integer output = 0;
-        try (Context context = Context.create()) {
-            context.eval("ruby", "print('Hello Ruby!');");
+        try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
+            // context.eval("ruby", "print('Hello Ruby!');");
             Value function = context.eval("python", "lambda x: x + 42");
             System.out.println(function.execute(0).asInt());
             output = function.execute(0).asInt();
         }
-        
-        return Response.ok(new SimpleStringObject(output).stringify()).build();
+        long duration = System.currentTimeMillis() - start;
+        return Response.ok(new SimpleStringObject(output, duration).stringify()).build();
     }
 
     @GET
-    @Path("ruby-object")
+    @Path("object")
     public Response getObject() {
+        long start = System.currentTimeMillis();
         String output = "";
-        try (Context context = Context.create()) {
+        try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
             Value result = context.eval("ruby",
-                "o ) Struct.new(:id, :text, :arr).new(" +
+                "o = Struct.new(:id, :text, :array).new(" +
                 "1, " +
                 "'two', " +
-                "['one', 'two', 'three', 'four']");
+                "['one', 'two', 'three', 'four']" +
+                ")");
             Value array = result.getMember("array");
-            output = array.getArrayElement(3) + " " + array.getArrayElement(1);
+
+            output = array.getArrayElement(3).asString() + " " + array.getArrayElement(1).asString();
         }
-        
-        return Response.ok(new SimpleStringObject(output).stringify()).build();
+        long duration = System.currentTimeMillis() - start;
+        return Response.ok(new SimpleStringObject(output, duration).stringify()).build();
     }
 }

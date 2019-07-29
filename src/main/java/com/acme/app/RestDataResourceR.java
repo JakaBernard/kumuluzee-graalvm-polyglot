@@ -14,33 +14,36 @@ import org.graalvm.polyglot.proxy.*;
 public class RestDataResourceR {
 
     @GET
-    @Path("r-lambda")
+    @Path("lambda")
     public Response getLambdaResult() {
+        long start = System.currentTimeMillis();
         Integer output = 0;
         try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
-            context.eval("R", "print('Hello R!');");
+            // context.eval("R", "print('Hello R!');");
             Value function = context.eval("R", "function (x) x + 42");
-            System.out.println(function.execute(0).asInt());
+            // System.out.println(function.execute(0).asInt());
             output = function.execute(0).asInt();
         }
-        
-        return Response.ok(new SimpleStringObject(output).stringify()).build();
+        long duration = System.currentTimeMillis() - start;
+        return Response.ok(new SimpleStringObject(output, duration).stringify()).build();
     }
 
     @GET
-    @Path("r-object")
+    @Path("object")
     public Response getObject() {
+        long start = System.currentTimeMillis();
         String output = "";
-        try (Context context = Context.create()) {
+        try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
             Value result = context.eval("R",
                 "list(" +
                 "id = 1, " +
                 "text = 'two', " +
-                "array = c('one', 'two', 'three', 'four')");
+                "array = c('one', 'two', 'three', 'four')" +
+                ")");
             Value array = result.getMember("array");
-            output = array.getArrayElement(3) + " " + array.getArrayElement(1);
+            output = array.getArrayElement(3).asString() + " " + array.getArrayElement(1).asString();
         }
-        
-        return Response.ok(new SimpleStringObject(output).stringify()).build();
+        long duration = System.currentTimeMillis() - start;
+        return Response.ok(new SimpleStringObject(output, duration).stringify()).build();
     }
 }
