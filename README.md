@@ -22,13 +22,13 @@ S posameznimi jeziki sta demonstrirani dve funkcionalnosti:
 Pri vsakem primeru je dodan tudi čas izvedbe v ms.
 
 
-Izvedbe lambd so na voljo na:
+Po zagonu aplikacije so izvedbe lambd lokalno na voljo na:
 - [Python](http://localhost:8080/v1/python/lambda)
 - [R](http://localhost:8080/v1/r/lambda)
 - [Ruby](http://localhost:8080/v1/ruby/lambda)
 - [JavaScript](http://localhost:8080/v1/js/lambda)
 
-Izvedbe dostopanja do atributov objektov so na voljo na:
+Po zagonu aplikacije so izvedbe dostopanja do atributov objektov lokalno na voljo na:
 - [Python](http://localhost:8080/v1/python/object)
 - [R](http://localhost:8080/v1/r/object)
 - [Ruby](http://localhost:8080/v1/ruby/object)
