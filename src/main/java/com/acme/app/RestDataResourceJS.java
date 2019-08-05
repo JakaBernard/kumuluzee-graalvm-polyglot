@@ -38,7 +38,7 @@ public class RestDataResourceJS {
             context.eval("js", "print('Hello JavaScript!'); console.log('what does console.log do?');");
             Value result = context.eval("js", 
             "(JSON.stringify({ " +
-            "question: `${'foo'+7}, what could this be?`" +
+            "question: `${'foo' + 42}, what could this be?`" +
             "}))");
             System.out.println(result.asString());
             output = result.asString();
@@ -131,7 +131,7 @@ public class RestDataResourceJS {
         try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
             MyArrayObject obj = new MyArrayObject();
             Value result = context.eval("js", 
-            "arr => Array.isArray(arr)");
+            "arr => `${Array.isArray(arr)}`");
             System.out.println(result.execute(obj.stringArray).asString());
             output = "Is value array?: " + result.execute(obj.stringArray).asString();
         }
@@ -225,6 +225,7 @@ class MyArrayObject {
 class SimpleStringObject {
     String result;
     long duration;
+    String message;
 
     SimpleStringObject(String data, long duration) {
         this.result = data;
@@ -234,6 +235,16 @@ class SimpleStringObject {
     SimpleStringObject(Integer data, long duration) {
         this.result = String.valueOf(data);
         this.duration = duration;
+    }
+
+    SimpleStringObject(Integer data, String message) {
+        this.result = String.valueOf(data);
+        this.message = message;
+    }
+
+    SimpleStringObject(String data, String message) {
+        this.result = data;
+        this.message = message;
     }
 
     SimpleStringObject(String data) {
@@ -246,5 +257,9 @@ class SimpleStringObject {
 
     String stringify() {
         return "{\"result\": \"" + this.result + "\", \"duration\": \"" + String.valueOf(this.duration) +" ms\"}";
+    }
+
+    String stringifyMessage() {
+        return "{\"result\": \"" + this.result + "\", \"duration\": \"" + String.valueOf(this.message) +"\"}";
     }
 }
