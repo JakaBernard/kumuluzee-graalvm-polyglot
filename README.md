@@ -53,13 +53,21 @@ Za jezik JavaScript so lokalno na voljo tudi točke
 9. [Own Array](http://localhost:8080/v1/js/own-array)
 
 Prva vrne preprost objekt, pretvorjen v JSON niz. Ta se izvede uspešno.
+
 Druga uporabi šablono za niz in vrne v niz združena podatka različnih tipov. Ta se izvede uspešno.
+
 Tretja poizkusi dobiti imena atrtibutov podanega javanskega objekta, vendar neuspešno. Ta se izvede uspešno.
+
 Četrta poizkusi podani javanski objekt pretvoriti v JSON niz znotraj JavaScript kode, vendar neuspešno.
+
 Od pete do osme vrnejo napako, ali pa delovanje ni tako, kot bi moralo biti.
 Peta poizkusi nad podano javansko tabelo izvajati funkcije, ki so v JavaScriptu pripete na vse tabele, vendar neuspešno.
+
 Šesta poiuzkusi podano javansko tabelo pretvoriti v JavaScript tabelo z vgrajeno funkcionalnostjo, vendar neuspešno.
+
 Sedma nad podano javansko tabelo izvede JavaScript funkcijo, ki preverja, ali je podani paramater tabela, vendar vrne napačen rezultat.
+
 Osma ponovno poizkusi nad podano javansko tabelo izvesti funkcijo, ki je v JavaScriptu pripeta na vsako tabelo, vendar nesuperšno.
+
 Deveta v gostovanem kontekstu ustvari JavaScript tabelo in nad njo izvede tabelsko operacijo, ki vse njene elemente zdriži v niz. Ta se izvede uspešno.
 
