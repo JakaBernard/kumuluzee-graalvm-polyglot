@@ -49,7 +49,7 @@ public class RestDataResourcePolyglot {
     }
 
     @GET
-    @Path("export-import-values/{minNumber}/{maxNumber}")
+    @Path("import-export-values/{minNumber}/{maxNumber}")
     @Produces(MediaType.TEXT_HTML)
     public Response getExportImportValues(@PathParam("minNumber") Integer minNumber, @PathParam("maxNumber") Integer maxNumber) {
         long start = System.currentTimeMillis();

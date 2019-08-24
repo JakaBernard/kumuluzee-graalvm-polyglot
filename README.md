@@ -82,4 +82,7 @@ V primeru
 Se iz URL parametra prebere HEX vrednost barve, se s pomočjo JS knjižnjice [JSChroma](https://github.com/gka/chroma.js) pretvori v RGB, dobljena barva pa se nato uporabi za barvanje grafa, ki ga vrne R.
 
 V primeru
-[Import export values](http://localhost:8080/v1/polyglot/import-export-values/)
+[Import export values](http://localhost:8080/v1/polyglot/import-export-values/0/50)
+Se v Polyglot kontekst vneseta `minNumber` (prva vrednost) in `maxNumber` (druga vrednost). Nato se v JS naredi tabela števil od `minNumber` do `maxNumber` (števili se prebereta iz Polyglot konteksta), števila pa se nato kvadrirajo. Nastala tabela se vnese v Polyglot kontekst. Iz tam se prebere v R kodo, kjer se nad elementi izvede kvadratno korenjenje, nato pa se tabelo skalarno zmnoži samo s sabo in shrani v Polyglot kontekst kot število.
+V Javi število nato preberemo iz Polyglot konteksta in ga vrnemo kot niz.
+
