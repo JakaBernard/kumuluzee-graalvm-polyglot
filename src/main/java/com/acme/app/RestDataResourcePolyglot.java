@@ -47,4 +47,29 @@ public class RestDataResourcePolyglot {
         System.out.printf("Color spiral took %d ms\n", duration);
         return Response.ok(output).build();
     }
+
+    @GET
+    @Path("export-import-values/{minNumber}/{maxNumber}")
+    @Produces(MediaType.TEXT_HTML)
+    public Response getExportImportValues(@PathParam("minNumber") Integer minNumber, @PathParam("maxNumber") Integer maxNumber) {
+        long start = System.currentTimeMillis();
+        String output = "";
+        if (minNumber > maxNumber) {
+            output = "Min number (first) must be smaller or equal to max number!";
+        } else {
+            try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
+                context.getPolyglotBindings().putMember("minNumber", minNumber);
+                context.getPolyglotBindings().putMember("maxNumber", maxNumber);
+                context.eval("js", "Polyglot.export('array10sq', Array(Polyglot.import('maxNumber')-Polyglot.import('minNumber')+1).fill().map((_, idx) => Polyglot.import('minNumber') + idx).map(val => val * val))");
+                context.eval("R", "array10sq=t(sqrt(1*import('array10sq')))");
+                context.eval("R", "scalar<-drop(array10sq%*%t(array10sq))");
+                context.eval("R", "export('scalar', scalar)");
+                Value scalar = context.getPolyglotBindings().getMember("scalar");
+                output = String.valueOf(scalar.as(Object.class));
+            }
+        }
+        long duration = System.currentTimeMillis() - start;
+        System.out.printf("Import export took %d ms\n", duration);
+        return Response.ok(output).build();
+    }
 }
