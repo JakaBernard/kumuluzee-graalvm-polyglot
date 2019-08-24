@@ -31,6 +31,11 @@
       <groupId>com.kumuluz.ee</groupId>
       <artifactId>kumuluzee-jax-rs-jersey</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.graalvm</groupId>
+      <artifactId>graal-sdk</artifactId>
+      <version>1.0.0-rc7</version>
+    </dependency>
   </dependencies>
   <dependencyManagement>
     <dependencies>

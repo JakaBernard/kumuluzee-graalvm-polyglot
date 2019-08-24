@@ -3,10 +3,8 @@ package com.acme.app;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 import org.graalvm.polyglot.*;
-import org.graalvm.polyglot.proxy.*;
 
 @Consumes(MediaType.APPLICATION_JSON)
 

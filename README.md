@@ -11,6 +11,9 @@ Za izvajanje primerov je potrebno v GraalVM predhodno naložiti Python, R in Rub
 Pred prvim zagonom je potrebno namestiti zahtevane javanske knjičnice z izvedbo ukaza
 `mvn install`
 
+Oziroma za priročnejše poganjanje zgornjih ukazov poženete skripto
+`init.sh`
+
 Prevod in izvedbo demonstracijske aplikacije dosežemo z:
 `./build.sh && ./run.sh`
 
@@ -71,3 +74,8 @@ Osma ponovno poizkusi nad podano javansko tabelo izvesti funkcijo, ki je v JavaS
 
 Deveta v gostovanem kontekstu ustvari JavaScript tabelo in nad njo izvede tabelsko operacijo, ki vse njene elemente zdriži v niz. Ta se izvede uspešno.
 
+## Medsebojna uporaba večjezičnosti
+V GraalVM je možno jezike tudi mesebojno uporabljati. 
+V primeru
+[Color spiral](http://localhost:8080/v1/polyglot/color-spiral/000000)
+Se iz URL parametra prebere HEX vrednost barve, se s pomočjo JS knjižnjice [JSChroma](https://github.com/gka/chroma.js) pretvori v RGB, dobljena barva pa se nato uporabi za barvanje grafa, ki ga vrne R.

@@ -29,3 +29,5 @@ target
 com.kumuluz.ee.eeapplication
 
 .vscode
+
+node_modules

@@ -3,10 +3,8 @@ package com.acme.app;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 import org.graalvm.polyglot.*;
-import org.graalvm.polyglot.proxy.*;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -161,7 +159,6 @@ public class RestDataResourceJS {
     public Response getOwnArray() {
         String output = "";
         try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
-            MyArrayObject obj = new MyArrayObject();
             Value result = context.eval("js", 
             "[1, 2, 3, 4].map(val => `+${val}`).join(', ')");
             System.out.println(result.asString());
